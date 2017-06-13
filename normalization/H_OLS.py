@@ -39,11 +39,15 @@ def main():
         Dominik Schlechtweg, Stefanie Eckmann, Enrico Santus, Sabine Schulte im Walde and Daniel Hole. 
             2017. German in Flux: Detecting Metaphoric Change via Word Entropy. In Proceedings of 
             CoNLL 2017. Vancouver, Canada.
+
+    Frequency and entropy ranks can be extracted with dsm_creation/get_freqs.py and measures/H_rank.py .
     """
 
     # Get the arguments
     args = docopt("""H_OLS - Regression of dependent variable Y (entropy) from independent variable X (frequency) 
-                        with plots.
+                        with plots. Takes as main input a rank (or list) of frequencies and a rank (list) of entropies.
+                        Frequency and entropy ranks can be extracted with dsm_creation/get_freqs.py and measures/H_rank.py .
+
 
     Usage:
         H_OLS.py <file1> <file2> <testset_file> <output_file> <x_interval> <x_size>
