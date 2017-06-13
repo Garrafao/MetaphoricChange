@@ -13,6 +13,7 @@ def main():
     """
     Make unscored results from frequency rank for targets in test set.
     score_results.py can then be used to get difference between two unscored files.
+    Frequency ranks can be obtained from dta with dsm_creation/get_freqs.py .
     """
 
     # Get the arguments

@@ -248,106 +248,6 @@ class Space_extension(Space):
             r_entropies_dict[w] = H
         
         return r_entropies_dict
-
-
-    def compute_row_kldivs(self, targets):
-
-        targets_size = len(targets)
-        vocab_map = self.get_row2id()
-        
-        # Iterate over rows
-        r_dict = {}
-        print "Iterating over rows..."
-        for j, w in enumerate(targets):
-            
-            if w not in vocab_map:
-                continue
-
-            print "%d%% done..." % (j*100/targets_size)            
-            row = self.get_row(w)
-
-            # Get all counts in row (non-zero elements)
-            counts = row.get_mat().data
-
-            # Get sum of row
-            r_total_freq = row.get_mat().sum()
-
-            # Normalize row vector
-            counts_norm = [(count/r_total_freq) for count in counts]    
-            
-            #Create a uniform pdf over the range [0,1]       
-            uni = [1.0/len(counts) for count in counts]    
-          
-            #print uni
-            #print counts_norm
-            
-            #x = np.linspace(0,1,len(counts_norm))
-            #uni = sc.uniform.pdf(x) # Create a uniform pdf over the range [0,1]
-
-            #custm = sc.rv_discrete(name='custm', values=(counts, uni))
-            #custm = custm.pmf()
-
-            div = sc.entropy(uni, counts_norm)
-            
-            #print sc.entropy([0.5, 0.5], [0.3, 0.7])
-            #print sc.entropy([0.5, 0.5, 0.5], [0.2, 0.6, 0.2])
-
-            #print w, div, len(counts)
-
-            r_dict[w] = div
-        
-        return r_dict
-        
-        
-    def compute_row_frequencies(self, targets):
-
-        targets_size = len(targets)
-        vocab_map = self.get_row2id()
-        
-        # Iterate over rows
-        r_frequencies_dict = {}
-        
-        print "Iterating over rows..."
-        for j, w in enumerate(targets):
-            
-            if w not in vocab_map:
-                continue
-
-            print "%d%% done..." % (j*100/targets_size)            
-            row = self.get_row(w)
-
-            # Get sum of row
-            r_total_freq = row.get_mat().sum()
-
-            r_frequencies_dict[w] = r_total_freq
-        
-        return r_frequencies_dict
-        
-        
-    def compute_row_typtoks(self, targets):
-
-        targets_size = len(targets)
-        vocab_map = self.get_row2id()
-        
-        # Iterate over rows
-        r_typtoks_dict = {}
-        
-        print "Iterating over rows..."
-        for j, w in enumerate(targets):
-            
-            if w not in vocab_map:
-                continue
-
-            print "%d%% done..." % (j*100/targets_size)            
-            row = self.get_row(w)
-
-            # Get sum of row
-            r_total_freq = row.get_mat().sum()
-            r_types = row.get_mat().getnnz()
-
-            r_typtoks_dict[w] = r_types/r_total_freq
-        
-        return r_typtoks_dict
         
 
     def compute_context_entropies(self, union_m_a_c):
@@ -390,115 +290,7 @@ class Space_extension(Space):
             c_entropies_dict[context] = H
         
         return c_entropies_dict
-
-
-    def get_r_asoc_vecs(self, N, targets, most_associated_cols_dict):
-
-        targets_size = len(targets)
-        vocab_map = self.get_row2id()
         
-        # Iterate over rows
-        vecs_dict = {}
-        
-        print "Iterating over rows..."
-        for j, w in enumerate(targets):
-            
-            if w not in vocab_map:
-                continue
-
-            print "%d%% done..." % (j*100/targets_size)            
-            row = self.get_row(w)
-            
-            # Data returns the non-zero elements in the row and indices returns the indices of the non-zero elements
-            data = row.get_mat().data
-            indices = row.get_mat().indices
-            
-            indices_rev_dict = { index : i for i, index in enumerate(indices) }
-                        
-            #print data
-            #print indices
-            #print indices_rev_dict                
-            #print most_associated_cols_dict[w]
-    
-            reduced_row = [ data[indices_rev_dict[index[0]]] for index in most_associated_cols_dict[w] ]
-
-            vecs_dict[w] = reduced_row  
-            
-            #print reduced_row
-            
-        return vecs_dict
-                
-        
-    def make_absolute_target_entropies(self, args, targets, most_associated_cols_dict, c_entropies, test_set):
-    
-        N = int(args['<N>'])    
-    
-        is_average = args['--average']
-        is_median = args['--median']         
-        target_output = args['target_output']
-        
-        targets_size = len(targets)     
-        vocab_map = self.get_vocab()
-        id2column_map = self.get_id2column_map()
-        
-        print "Computing target entropies..."
-        i = 0
-        target_entropies = {}    
-        # Compute target entropies for all target rows
-        for target in targets:
-            if target not in vocab_map:
-                continue
-            
-            print "%d%% done..." % (i*100/targets_size)
-            
-            # N most associated contexts of target
-            most_associated_cs = [id2column_map[mapping[0]] for mapping in most_associated_cols_dict[target][:N]]
-                                      
-            #print "Most associated contexts of " + target
-            #print most_associated_cs
-            
-            if not len(most_associated_cs) > 0:
-                target_entropies[target] = -999.0
-                continue
-    
-            # Get the entropies of the most associated contexts
-            entr_of_most_assoc_cs = [float(c_entropies[context]) for context in most_associated_cs]
-            
-            # Compute the average or median of the entropies of the most associated contexts (target entropy)
-            if is_average:
-                target_entropy = float(mean(entr_of_most_assoc_cs))
-            elif is_median:
-                target_entropy = float(median(entr_of_most_assoc_cs))
-                   
-            target_entropies[target] = target_entropy
-            
-            i += 1
-        
-        # Rank the target entropies
-        target_entropies_ranked = sorted(target_entropies, key=lambda x: -(target_entropies[x]))
-
-        #TODO: make target entropy file an argument of the script
-        # Save the target entropies for maximal number of associated columns <= N
-        print "Writing target entropies to %s..." % target_output
-        with open(target_output, 'w') as f_out:
-            for target in target_entropies_ranked:
-                H = target_entropies[target]
-                print >> f_out, "\t".join((target, str(H)))
-        
-
-        # Prepare output            
-        unscored_output = []        
-        for (x, y, label, relation) in test_set:
-            if x not in vocab_map or y not in vocab_map:
-                # Assign a special score to out-of-vocab pairs
-                unscored_output.append((x, y, label, relation, -999.0, -999.0))
-                continue 
-        
-            unscored_output.append((x, y, label, relation, target_entropies[x], target_entropies[y]))
-            
-                    
-        return unscored_output
-         
          
 def slqs(x_entr, y_entr):
     """
@@ -653,27 +445,6 @@ def get_all_most_assoc_cols(mi_space, targets, vocab_map, N):
     
     return most_associated_cols_dict, union_m_a_c
     
-    
-def assign_c_entr_file(matrice_name, is_pmi, is_lmi, is_weighted):
-    """
-    Assigns the path of the context entropy file.
-    :param matrice_name: string, name of matrice file
-    :param is_pmi: boolean, whether matrice is weighted with PPMI values
-    :param is_lmi: boolean, whether matrice is weighted with PLMI values
-    :param is_weighted: boolean, whether matrice is weighted in the first place
-    :return c_entrop_file: string, path of context_entropy file
-    """
-    
-    if is_weighted:
-        if is_pmi:
-            c_entrop_file = "measures/entropies/context_entropies/" + matrice_name + "_ppmi" + "_context_entropies" + ".txt" 
-        if is_lmi:
-            c_entrop_file = "measures/entropies/context_entropies/" + matrice_name + "_plmi" + "_context_entropies" + ".txt" 
-    if not is_weighted:
-        c_entrop_file = "measures/entropies/context_entropies/" + matrice_name  + "_freq" + "_context_entropies" + ".txt"
-
-    return c_entrop_file
-    
 
 def save_entropies(entr_ranked, entropies_dict, entrop_file):
     """
@@ -716,69 +487,6 @@ def get_r_entropies(targets, cooc_space, mi_space, target_output, is_freq):
     r_entr_ranked = sorted(r_entropies_dict, key=lambda x: -(float(r_entropies_dict[x])))
          
     return r_entropies_dict, r_entr_ranked
-    
-    
-def get_r_frequencies(targets, cooc_space, mi_space, target_output, is_freq):
-    
-    # Get row frequencies
-    if is_freq:
-        print "Computing row frequencies from co-occurence matrice..."
-        r_frequencies_dict = cooc_space.compute_row_frequencies(targets)
-        print "Calculated frequencies for %d rows." % len(r_frequencies_dict)
-    else:
-        print "Computing row frequencies from weighted matrice..."
-        r_frequencies_dict = mi_space.compute_row_frequencies(targets)
-        print "Calculated frequencies for %d rows." % len(r_frequencies_dict)
-            
-    # Rank the row frequencies
-    r_freq_ranked = sorted(r_frequencies_dict, key=lambda x: -(float(r_frequencies_dict[x])))
-    
-#    # Save the row frequencies      
-#    save_entropies(r_freq_ranked, r_frequencies_dict, target_output)
-            
-    return r_frequencies_dict, r_freq_ranked
-    
-
-def get_r_typtoks(targets, cooc_space, mi_space, target_output, is_freq):
-    
-    # Get row types per token
-    if is_freq:
-        print "Computing row types per token from co-occurence matrice..."
-        r_typtoks_dict = cooc_space.compute_row_typtoks(targets)
-        print "Calculated types per token for %d rows." % len(r_typtoks_dict)
-    else:
-        print "Computing row types per token from weighted matrice..."
-        r_typtoks_dict = mi_space.compute_row_typtoks(targets)
-        print "Calculated types per token for %d rows." % len(r_typtoks_dict)
-            
-    # Rank the row types per token
-    r_typtok_ranked = sorted(r_typtoks_dict, key=lambda x: -(float(r_typtoks_dict[x])))
-    
-#    # Save the row types per token      
-#    save_entropies(r_typtok_ranked, r_typtoks_dict, target_output)
-            
-    return r_typtoks_dict, r_typtok_ranked
-    
-
-def get_r_kldivs(targets, cooc_space, mi_space, target_output, is_freq):
-    
-    # Get row KL-div
-    if is_freq:
-        print "Computing row KL-div from co-occurence matrice..."
-        r_kldiv_dict = cooc_space.compute_row_kldivs(targets)
-        print "Calculated KL-div for %d rows." % len(r_kldiv_dict)
-    else:
-        print "Computing row KL-div from weighted matrice..."
-        r_kldiv_dict = mi_space.compute_row_kldivs(targets)
-        print "Calculated KL-div for %d rows." % len(r_kldiv_dict)
-            
-    # Rank the row KL-div
-    r_kldiv_ranked = sorted(r_kldiv_dict, key=lambda x: -(float(r_kldiv_dict[x])))
-    
-#    # Save the values      
-#    save_entropies(r_kldiv_ranked, r_kldiv_dict, target_output)
-            
-    return r_kldiv_dict, r_kldiv_ranked
 
 
 def get_c_entropies(targets, cooc_space, mi_space, N, c_entrop_file, vocab_map, id2column_map, most_associated_cols_dict, union_m_a_c, is_freq, is_weighted): 
@@ -849,40 +557,6 @@ def get_c_entropies(targets, cooc_space, mi_space, N, c_entrop_file, vocab_map, 
     return c_entropies_dict, c_entr_ranked
    
 
-def get_asoc_vecs(targets, cooc_space, mi_space, N, most_associated_cols_dict, is_freq, is_weighted):  
-
-    if is_freq:
-        print "Getting vectors from co-occurence matrice..."
-        vecs_dict = cooc_space.get_r_asoc_vecs(N, targets, most_associated_cols_dict)
-    elif is_weighted:
-        print "Getting vectors from weighted matrice..."
-        vecs_dict = mi_space.get_r_asoc_vecs(N, targets, most_associated_cols_dict)
-            
-    return vecs_dict   
-   
-   
-def convert_neg(dictionary):
-    
-    print "Converting values to negative..."    
-    
-    dictionary_neg = dict([[key, -dictionary[key]] for key in dictionary])
-
-    return dictionary_neg
-
-
-def prune_dict(dict_, list_):
-    
-    pruned_dict = {}
-
-    print "Pruning dictionary..."    
-    
-    for key in list_:
-        if key in dict_:
-            pruned_dict[key] = dict_[key]
-    
-    return pruned_dict
-
-
 def make_relative_target_entropies(output_file, vocab_map, id2column_map, test_set, most_associated_cols_dict, c_entropies, N, is_average, is_median):
     """
     Get relative entropy values for x and y for each test pair (x,y) of each test item.
@@ -927,9 +601,6 @@ def make_relative_target_entropies(output_file, vocab_map, id2column_map, test_s
 
             # M Most associated contexts of x and y
             m_most_assoc_cs[var] = [id2column_map[mapping[0]] for mapping in most_associated_cols_dict[var][:M]]
-                                      
-            #print "M Most associated contexts of " + var
-            #print m_most_assoc_cs[var]
 
             entr_of_m_most_assoc_cs = {}    
 
@@ -1042,13 +713,3 @@ def save_results(scored_output, output_file):
             print >> f_out, '\t'.join((x, y, label, relation, '%.8f' % score))
     
     print "Saved the results to " + output_file
-    
-
-def score_f1_binary(scores):
-    
-    try:
-        f1 = float(len([True for x in scores if x == True]))/len(scores)
-    except ZeroDivisionError:
-        return 0.0
-    
-    return f1

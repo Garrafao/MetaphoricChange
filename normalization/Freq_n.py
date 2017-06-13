@@ -9,17 +9,17 @@ from slqs_module import *
 
 def main():
     """
-    Normalizes list of ranked values via division and saves to file.
+    Normalizes list of ranked frequency values via division and saves to file.
     """
 
     # Get the arguments
-    args = docopt("""Normalizes list of ranked values via division and saves to file.
+    args = docopt("""Normalizes list of ranked frequency values via division and saves to file.
 
 
     Usage:
-        rank_normalize.py <divisor> <file> <output_file>
+        Freq_n.py <divisor> <file> <output_file>
 
-        <divisor> = tag to consider in file2        
+        <divisor> = tag to consider in file       
         <file> = file with list of targets + values (tab-separated)
         <output_file> = where to save the normalized target-value pairs from file
 

@@ -87,7 +87,7 @@ def main():
     cooc_space1, mi_space1, vocab_map1, vocab_size1, column_map1, id2column_map1 = get_space(matrice1_folder, matrice1_name, is_pmi, is_lmi, is_save_weighted)
     
     # Get most associated columns for all targets
-    most_associated_cols_dict1, union_m_a_c1 = get_all_most_assoc_cols(mi_space1, vocab_map1, vocab_map1, N)
+    most_associated_cols_dict1, union_m_a_c1 = get_all_most_assoc_cols(mi_space1, targets, vocab_map1, N)
 
     # Assign context entropy file
     c_entrop_file1 = context_entropy_file1
@@ -117,7 +117,7 @@ def main():
     cooc_space2, mi_space2, vocab_map2, vocab_size2, column_map2, id2column_map2 = get_space(matrice2_folder, matrice2_name, is_pmi, is_lmi, is_save_weighted)
     
     # Get most associated columns for all targets
-    most_associated_cols_dict2, union_m_a_c2 = get_all_most_assoc_cols(mi_space2, vocab_map2, vocab_map2, N)
+    most_associated_cols_dict2, union_m_a_c2 = get_all_most_assoc_cols(mi_space2, targets, vocab_map2, N)
 
     # Assign context entropy file
     c_entrop_file2 = context_entropy_file2
