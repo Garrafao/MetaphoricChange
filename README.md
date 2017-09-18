@@ -24,6 +24,8 @@ Wherever part of the code is copyrighted this is indicated in the respective fil
 
 The scripts should be run directly from the main directory. If you wish to do otherwise, you may have to change the path you add to the path attribute in `sys.path.append('./modules/')` in the scripts.
 
+We recommend you to run the scripts with the Python Anaconda distribution (Python 2.7). You will have to install some additional packages such as: docopt, gensim, pytables, i.a. Those that aren't available from the Anaconda installer can be installed via EasyInstall.
+
 
 ### Reproduction of Results
 
