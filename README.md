@@ -2,7 +2,7 @@
 
 Data and code for the experiments in 
 
-* Dominik Schlechtweg, Stefanie Eckmann, Enrico Santus, Sabine Schulte im Walde and Daniel Hole. 2017. German in Flux: Detecting Metaphoric Change via Word Entropy. In Proceedings of CoNLL 2017. Vancouver, Canada.
+* Dominik Schlechtweg, Stefanie Eckmann, Enrico Santus, Sabine Schulte im Walde and Daniel Hole. 2017. [German in Flux: Detecting Metaphoric Change via Word Entropy.](https://aclanthology.coli.uni-saarland.de/papers/K17-1036/k17-1036) In Proceedings of CoNLL 2017. Vancouver, Canada. [slides](https://www.slideshare.net/aclanthology/dominik-schlechtweg-2017-german-in-flux-detecting-metaphoric-change-via-word-entropy)
            
 ### Test Set, Annotation Data and Results
  
@@ -15,7 +15,7 @@ In `./dataset/` we provide the reduced test set version (as described in the pap
 
 The measure code is based on the scripts in 
 
-* V. Shwartz, E. Santus, and D. Schlechtweg. 2016. Hypernyms under Siege: Linguistically-motivated Artillery for Hypernymy Detection. CoRR abs - 1612 - 04460. [repository](https://github.com/vered1986/UnsupervisedHypernymy)
+* Vered Shwartz, Enrico Santus, and Dominik Schlechtweg. 2017. Hypernyms under siege: Linguistically-motivated artillery for hypernymy detection. In Proceedings of the 15th Conference of the European Chapter of the Association for Computational Linguistics (EACL), Valencia, Spain. [repository](https://github.com/vered1986/UnsupervisedHypernymy)
 
 Wherever part of the code is copyrighted this is indicated in the respective file.
 
