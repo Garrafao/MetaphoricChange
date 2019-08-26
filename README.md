@@ -15,7 +15,7 @@ In `./dataset/` we provide the reduced test set version (as described in the pap
 
 The measure code is based on the scripts in 
 
-* Vered Shwartz, Enrico Santus, and Dominik Schlechtweg. 2017. [Hypernyms under siege: Linguistically-motivated artillery for hypernymy detection.](https://aclanthology.coli.uni-saarland.de/papers/E17-1007/e17-1007) In Proceedings of the 15th Conference of the European Chapter of the Association for Computational Linguistics (EACL), Valencia, Spain. [repository](https://github.com/vered1986/UnsupervisedHypernymy)
+* Vered Shwartz, Enrico Santus, and Dominik Schlechtweg. 2017. [Hypernyms under siege: Linguistically-motivated artillery for hypernymy detection.](https://www.aclweb.org/anthology/E17-1007/) In Proceedings of the 15th Conference of the European Chapter of the Association for Computational Linguistics (EACL), Valencia, Spain. [repository](https://github.com/vered1986/UnsupervisedHypernymy)
 
 Wherever part of the code is copyrighted this is indicated in the respective file.
 
