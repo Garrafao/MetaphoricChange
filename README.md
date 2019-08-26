@@ -2,7 +2,7 @@
 
 Data and code for the experiments in 
 
-* Dominik Schlechtweg, Stefanie Eckmann, Enrico Santus, Sabine Schulte im Walde and Daniel Hole. 2017. [German in Flux: Detecting Metaphoric Change via Word Entropy.](https://aclanthology.coli.uni-saarland.de/papers/K17-1036/k17-1036) In Proceedings of CoNLL 2017. Vancouver, Canada. [slides](https://www.slideshare.net/aclanthology/dominik-schlechtweg-2017-german-in-flux-detecting-metaphoric-change-via-word-entropy)
+* Dominik Schlechtweg, Stefanie Eckmann, Enrico Santus, Sabine Schulte im Walde and Daniel Hole. 2017. [German in Flux: Detecting Metaphoric Change via Word Entropy.](https://www.aclweb.org/anthology/K17-1036/) In Proceedings of CoNLL 2017. Vancouver, Canada. [slides](https://www.slideshare.net/aclanthology/dominik-schlechtweg-2017-german-in-flux-detecting-metaphoric-change-via-word-entropy)
            
 ### Test Set, Annotation Data and Results
  
